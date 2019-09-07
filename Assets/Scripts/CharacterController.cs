@@ -1,4 +1,13 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+
+public enum PlayerState
+{
+    WithoutWeapon,
+    PickingUpPM,
+    WithPM
+}
 
 [RequireComponent (typeof (Rigidbody))]
 public class CharacterController : MonoBehaviour {
@@ -10,7 +19,10 @@ public class CharacterController : MonoBehaviour {
     public float maxVelocityChange = 10f;               //максимальное изменение скорости
     public float maxVerticalAngle = 60f;                //максимальное отклонение камеры по горизантали
     public float sitHeight = 0.75f;                     //высота присеста
-    
+    public PlayerState currentState;
+    public GameObject hands;
+
+    private Animator Animator;
     private Rigidbody rigidbodyBody;
     private Quaternion originCameraRotation;            //начальные оси поворота камеры
     private Vector3 originCameraPosition;               //начальные координаты камеры
@@ -24,11 +36,17 @@ public class CharacterController : MonoBehaviour {
         rigidbodyBody = GetComponent<Rigidbody>();
         originCameraRotation = mainCamera.transform.rotation;
         originCameraPosition = mainCamera.transform.localPosition;
-
+        Animator = GetComponent<Animator>();
+        currentState = PlayerState.WithoutWeapon;
         Cursor.lockState = CursorLockMode.Locked;
-	}
+    }
 
-	private void FixedUpdate() {
+    private void Start()
+    {
+        hands.SetActive(false);
+    }
+
+    private void FixedUpdate() {
         angleHorizontal += Input.GetAxis("Mouse X") * mouseSensitivity;
         angleVertical += Input.GetAxis("Mouse Y") * mouseSensitivity;
         angleVertical = Mathf.Clamp(angleVertical, -maxVerticalAngle, maxVerticalAngle);
@@ -76,5 +94,26 @@ public class CharacterController : MonoBehaviour {
             isSit = false;
             mainCamera.transform.localPosition = originCameraPosition;
         }
+    }
+
+    private IEnumerator PickUpPM()
+    {
+        hands.SetActive(true);
+        Animator.SetBool("FoundPm", true);
+        
+        currentState = PlayerState.PickingUpPM;
+        yield return new WaitForSeconds(9.20f);
+        currentState = PlayerState.WithPM;
+        
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Weapon"))
+        {
+            Destroy(other.gameObject);
+            StartCoroutine(PickUpPM());
+        }
+        
     }
 }

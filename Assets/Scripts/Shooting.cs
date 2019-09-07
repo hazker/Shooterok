@@ -14,19 +14,19 @@ public class Shooting : MonoBehaviour
     public GameObject shellPref;
     public Transform  shellspawn;
     
-
     private GameObject shell;
     public float shellpower = 1f;
     // Start is called before the first frame update
     void Start()
     {
-        
+       
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 forward = firepoint.transform.TransformDirection(Vector3.forward) * 100;
+
+        Vector3 forward = firepoint.transform.TransformDirection(Vector3.forward) * distance;
         Debug.DrawRay(firepoint.transform.position, forward, Color.green);
         if (Input.GetMouseButtonDown(0))
         {
@@ -36,7 +36,7 @@ public class Shooting : MonoBehaviour
     }
     private void Shot()
     {
-        if(Physics.Raycast(firepoint.position, transform.forward, out hit, distance))
+        if(Physics.Raycast(firepoint.position, -transform.forward, out hit, distance))
         {
             Rigidbody rb = hit.transform.GetComponent<Rigidbody>();
             if(rb!=null && !rb.isKinematic && rb.constraints == RigidbodyConstraints.None)
