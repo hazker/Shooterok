@@ -100,7 +100,6 @@ public class CharacterController : MonoBehaviour {
     {
         hands.SetActive(true);
         Animator.SetBool("FoundPm", true);
-        
         currentState = PlayerState.PickingUpPM;
         yield return new WaitForSeconds(9.20f);
         currentState = PlayerState.WithPM;
