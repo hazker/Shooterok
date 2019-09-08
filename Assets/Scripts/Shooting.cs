@@ -8,18 +8,19 @@ public class Shooting : MonoBehaviour
     public float power = 50f;
     public float distance = 100;
     public Transform firepoint;
+    public GameObject shellPref;
+    public Transform shellspawn;
+    public CharacterController Player;
+    public float shellpower = 50f;
+    public Animator Animator;
 
     private RaycastHit hit;
-
-    public GameObject shellPref;
-    public Transform  shellspawn;
-    
     private GameObject shell;
-    public float shellpower = 1f;
+    
     // Start is called before the first frame update
     void Start()
     {
-       
+        Player = Player.GetComponent<CharacterController>();
     }
 
     // Update is called once per frame
@@ -28,12 +29,23 @@ public class Shooting : MonoBehaviour
 
         Vector3 forward = firepoint.transform.TransformDirection(Vector3.forward) * distance;
         Debug.DrawRay(firepoint.transform.position, forward, Color.green);
-        if (Input.GetMouseButtonDown(0))
+        //Debug.Log(Player.currentState);
+        if (Input.GetMouseButtonDown(0) && Player.currentState==PlayerState.WithPM)
         {
-            Shot();
-            shellout();
+            StartCoroutine(shot());
         }
     }
+
+    private IEnumerator shot()
+    {
+        Player.currentState = PlayerState.Shoot;
+        Animator.SetBool("Fire", true);
+        Shot();
+        yield return new WaitForSeconds(.5f);
+        Animator.SetBool("Fire", false);
+        Player.currentState = PlayerState.WithPM;
+    }
+
     private void Shot()
     {
         if(Physics.Raycast(firepoint.position, -transform.forward, out hit, distance))
@@ -51,12 +63,9 @@ public class Shooting : MonoBehaviour
         {
             Debug.Log("Miss");
         }
-        
-    }
-    private void shellout()
-    {
         shell = Instantiate(shellPref, shellspawn.position, shellspawn.rotation);
         shell.GetComponent<Rigidbody>().AddForce(shell.transform.right * shellpower, ForceMode.Impulse);
         Destroy(shell, 2f);
+
     }
 }

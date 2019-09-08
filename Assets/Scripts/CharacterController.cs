@@ -5,14 +5,16 @@ using UnityEngine;
 public enum PlayerState
 {
     WithoutWeapon,
+    Shoot,
     PickingUpPM,
-    WithPM
+    WithPM,
+    ReloadPM
 }
 
 [RequireComponent (typeof (Rigidbody))]
 public class CharacterController : MonoBehaviour {
 
-    [SerializeField]Camera mainCamera;
+    public Camera mainCamera;
 	public float mouseSensitivity = 5f;                 //чувствительность мыши
     public float speed = 5f;                            //скорость персонажа
     public float runMultiple = 2f;                      //множитель бега
@@ -21,6 +23,7 @@ public class CharacterController : MonoBehaviour {
     public float sitHeight = 0.75f;                     //высота присеста
     public PlayerState currentState;
     public GameObject hands;
+    
 
     private Animator Animator;
     private Rigidbody rigidbodyBody;
@@ -44,6 +47,24 @@ public class CharacterController : MonoBehaviour {
     private void Start()
     {
         hands.SetActive(false);
+    }
+
+    private IEnumerator reloadPM()
+    {
+        Animator.SetBool("ReloadPm", true);
+        currentState = PlayerState.ReloadPM;
+        yield return new WaitForSeconds(5.17f);
+        Animator.SetBool("ReloadPm", false);
+        currentState = PlayerState.WithPM;
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.R) && currentState==PlayerState.WithPM)
+        {
+            currentState = PlayerState.ReloadPM;
+            StartCoroutine(reloadPM());
+        }
     }
 
     private void FixedUpdate() {
@@ -106,13 +127,28 @@ public class CharacterController : MonoBehaviour {
         
     }
 
+    private IEnumerator PickUpTommy()
+    {
+        hands.SetActive(true);
+        Animator.SetBool("FoundTommy", true);
+        currentState = PlayerState.PickingUpPM;
+        yield return new WaitForSeconds(2.30f);
+        currentState = PlayerState.WithPM;
+
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Weapon"))
+        if (other.CompareTag("PM"))
         {
             Destroy(other.gameObject);
             StartCoroutine(PickUpPM());
         }
-        
+        if (other.CompareTag("TOMMY"))
+        {
+            Destroy(other.gameObject);
+            StartCoroutine(PickUpTommy());
+        }
+
     }
 }
