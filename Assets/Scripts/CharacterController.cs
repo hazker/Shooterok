@@ -6,26 +6,25 @@ public enum PlayerState
 {
     WithoutWeapon,
     Shoot,
-    PickingUpPM,
-    WithPM,
-    ReloadPM
+    PickingUp,
+    WithWeapon,
+    ReloadWeapon
 }
 
-[RequireComponent (typeof (Rigidbody))]
-public class CharacterController : MonoBehaviour {
-
+[RequireComponent(typeof(Rigidbody))]
+public class CharacterController : MonoBehaviour
+{
     public Camera mainCamera;
-	public float mouseSensitivity = 5f;                 //чувствительность мыши
+    public float mouseSensitivity = 5f;                 //чувствительность мыши
     public float speed = 5f;                            //скорость персонажа
     public float runMultiple = 2f;                      //множитель бега
     public float maxVelocityChange = 10f;               //максимальное изменение скорости
     public float maxVerticalAngle = 60f;                //максимальное отклонение камеры по горизантали
     public float sitHeight = 0.75f;                     //высота присеста
     public PlayerState currentState;
-    public GameObject hands;
-    
 
-    private Animator Animator;
+
+    private Shooting Shooting;
     private Rigidbody rigidbodyBody;
     private Quaternion originCameraRotation;            //начальные оси поворота камеры
     private Vector3 originCameraPosition;               //начальные координаты камеры
@@ -35,39 +34,18 @@ public class CharacterController : MonoBehaviour {
     private bool isRun = false;
     private bool isSit = false;
 
-	private void Awake() {
+    private void Awake()
+    {
         rigidbodyBody = GetComponent<Rigidbody>();
         originCameraRotation = mainCamera.transform.rotation;
         originCameraPosition = mainCamera.transform.localPosition;
-        Animator = GetComponent<Animator>();
+        //Shooting = GetComponent<Shooting>();
         currentState = PlayerState.WithoutWeapon;
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    private void Start()
+    private void FixedUpdate()
     {
-        hands.SetActive(false);
-    }
-
-    private IEnumerator reloadPM()
-    {
-        Animator.SetBool("ReloadPm", true);
-        currentState = PlayerState.ReloadPM;
-        yield return new WaitForSeconds(5.17f);
-        Animator.SetBool("ReloadPm", false);
-        currentState = PlayerState.WithPM;
-    }
-
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.R) && currentState==PlayerState.WithPM)
-        {
-            currentState = PlayerState.ReloadPM;
-            StartCoroutine(reloadPM());
-        }
-    }
-
-    private void FixedUpdate() {
         angleHorizontal += Input.GetAxis("Mouse X") * mouseSensitivity;
         angleVertical += Input.GetAxis("Mouse Y") * mouseSensitivity;
         angleVertical = Mathf.Clamp(angleVertical, -maxVerticalAngle, maxVerticalAngle);
@@ -75,21 +53,25 @@ public class CharacterController : MonoBehaviour {
         Quaternion rotationY = Quaternion.AngleAxis(angleHorizontal, Vector3.up);
         rigidbodyBody.MoveRotation(rotationY);
         rigidbodyBody.AddForce(GetVelocityChange(), ForceMode.VelocityChange);
-	}
+    }
 
-    private Vector3 GetVelocityChange() {
+    private Vector3 GetVelocityChange()
+    {
         Vector3 targetVelocity = new Vector3(Input.GetAxis("Horizontal"), 0, Input.GetAxis("Vertical"));
         targetVelocity = transform.TransformDirection(targetVelocity);
         targetVelocity *= speed;
 
-        if (targetVelocity.x != 0 && targetVelocity.z != 0) { //движение по диагонали
+        if (targetVelocity.x != 0 && targetVelocity.z != 0)
+        { //движение по диагонали
             targetVelocity *= diagonalMultiple;
         }
-        if (Input.GetKey(KeyCode.LeftShift) && Input.GetAxis("Vertical") > 0 && !isSit) { //бег
+        if (Input.GetKey(KeyCode.LeftShift) && Input.GetAxis("Vertical") > 0 && !isSit)
+        { //бег
             isRun = true;
             targetVelocity *= runMultiple;
         }
-        else {
+        else
+        {
             isRun = false;
         }
 
@@ -101,54 +83,22 @@ public class CharacterController : MonoBehaviour {
         return velocityChange;
     }
 
-    private void LateUpdate() {
+    private void LateUpdate()
+    {
         Quaternion rotationY = Quaternion.AngleAxis(angleHorizontal, Vector3.up);
         Quaternion rotationX = Quaternion.AngleAxis(-angleVertical, Vector3.right);
 
         mainCamera.transform.rotation = originCameraRotation * rotationY * rotationX;
 
-        if (Input.GetKey(KeyCode.LeftControl) && !isSit && !isRun) { //присест
+        if (Input.GetKey(KeyCode.LeftControl) && !isSit && !isRun)
+        { //присест
             isSit = true;
             mainCamera.transform.localPosition = originCameraPosition - new Vector3(0, sitHeight, 0);
         }
-        else if (!Input.GetKey(KeyCode.LeftControl) && isSit) {
+        else if (!Input.GetKey(KeyCode.LeftControl) && isSit)
+        {
             isSit = false;
             mainCamera.transform.localPosition = originCameraPosition;
         }
-    }
-
-    private IEnumerator PickUpPM()
-    {
-        hands.SetActive(true);
-        Animator.SetBool("FoundPm", true);
-        currentState = PlayerState.PickingUpPM;
-        yield return new WaitForSeconds(9.20f);
-        currentState = PlayerState.WithPM;
-        
-    }
-
-    private IEnumerator PickUpTommy()
-    {
-        hands.SetActive(true);
-        Animator.SetBool("FoundTommy", true);
-        currentState = PlayerState.PickingUpPM;
-        yield return new WaitForSeconds(2.30f);
-        currentState = PlayerState.WithPM;
-
-    }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("PM"))
-        {
-            Destroy(other.gameObject);
-            StartCoroutine(PickUpPM());
-        }
-        if (other.CompareTag("TOMMY"))
-        {
-            Destroy(other.gameObject);
-            StartCoroutine(PickUpTommy());
-        }
-
     }
 }
