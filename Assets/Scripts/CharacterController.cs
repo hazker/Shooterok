@@ -6,6 +6,7 @@ public enum PlayerState
 {
     WithoutWeapon,
     Shoot,
+    AutomaticShot,
     PickingUp,
     WithWeapon,
     ReloadWeapon

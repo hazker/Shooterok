@@ -18,6 +18,10 @@ public class Shooting : MonoBehaviour
     public GameObject[] shellPref;
     public Transform[] shellspawn;
 
+    public float fireDelta = 0.5F;
+    private float myTime = 0.0F;
+    private float nextFire = 0.5F;
+
     private Transform currentfirepoint;
     private GameObject currentshellPref;
     private Transform currentshellspawn;
@@ -40,14 +44,19 @@ public class Shooting : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        myTime = myTime + Time.deltaTime;
         if (Player.currentState == PlayerState.WithWeapon) { 
-        Vector3 forward = currentfirepoint.transform.TransformDirection(Vector3.forward) * distance;
-        Debug.DrawRay(currentfirepoint.transform.position, forward, Color.green);
         //Debug.Log(Player.currentState);
         if (Input.GetMouseButtonDown(0) && Player.currentState == PlayerState.WithWeapon)
         {
             StartCoroutine(shot(currentFireRate));
         }
+            if (Input.GetButton("Fire1") && myTime > nextFire){
+                nextFire = myTime + fireDelta;
+                StartCoroutine(shot(currentFireRate));
+                nextFire = nextFire - myTime;
+                myTime = 0.0F;
+            }
         if (Input.GetKeyDown(KeyCode.R) && Player.currentState == PlayerState.WithWeapon)
         {
             Player.currentState = PlayerState.ReloadWeapon;
@@ -120,12 +129,14 @@ public class Shooting : MonoBehaviour
 
     private void Shot()
     {
-        if (Physics.Raycast(currentfirepoint.position, -transform.forward, out hit, distance))
+        if (Physics.Raycast(currentfirepoint.position, transform.forward, out hit, distance))
         {
             Rigidbody rb = hit.transform.GetComponent<Rigidbody>();
             if (rb != null && !rb.isKinematic && rb.constraints == RigidbodyConstraints.None)
             {
                 Vector3 direction = (hit.point - transform.position).normalized;
+                Vector3 forward = currentfirepoint.transform.TransformDirection(Vector3.forward) * distance;
+                Debug.DrawRay(currentfirepoint.transform.position, forward, Color.green);
                 rb.AddForceAtPosition(direction * power, hit.point);
 
             }
