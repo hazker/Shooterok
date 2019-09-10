@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public enum PlayerState
 {
     WithoutWeapon,
@@ -23,7 +24,6 @@ public class CharacterController : MonoBehaviour
     public float maxVerticalAngle = 60f;                //максимальное отклонение камеры по горизантали
     public float sitHeight = 0.75f;                     //высота присеста
     public PlayerState currentState;
-
 
     private Shooting Shooting;
     private Rigidbody rigidbodyBody;
