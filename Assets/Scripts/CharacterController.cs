@@ -24,6 +24,8 @@ public class CharacterController : MonoBehaviour
     public float maxVerticalAngle = 60f;                //максимальное отклонение камеры по горизантали
     public float sitHeight = 0.75f;                     //высота присеста
     public PlayerState currentState;
+    public BoxCollider crouch;
+    public BoxCollider stand;
 
     private Shooting Shooting;
     private Rigidbody rigidbodyBody;
@@ -95,9 +97,13 @@ public class CharacterController : MonoBehaviour
         { //присест
             isSit = true;
             mainCamera.transform.localPosition = originCameraPosition - new Vector3(0, sitHeight, 0);
+            crouch.isTrigger = false;
+            stand.isTrigger = true;
         }
         else if (!Input.GetKey(KeyCode.LeftControl) && isSit)
         {
+            crouch.isTrigger = true;
+            stand.isTrigger = false;
             isSit = false;
             mainCamera.transform.localPosition = originCameraPosition;
         }
