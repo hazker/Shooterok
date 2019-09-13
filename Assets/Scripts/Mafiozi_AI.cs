@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+
 
 public class Mafiozi_AI : MonoBehaviour
 {
@@ -9,18 +11,19 @@ public class Mafiozi_AI : MonoBehaviour
     public float DistancetoRun;
     public float rasstoyanie;
 
-    public GameObject head_collider;
-    public GameObject body_collider;
-    public GameObject legs_collider;
+    public float healf = 100;
+    //public GameObject head_collider;
+    //public GameObject body_collider;
+    //public GameObject legs_collider;
 
     public GameObject Player;
     public GameObject Ragdoll;
     public GameObject mesh;
+    public GameObject my_weapon;
+    public GameObject my_weapon_resp_pos;
     public Animator anim;
 
-    public bool hit_inleg;
-    public bool hit_inbody;
-    public bool hit_inhead;
+    public float hit_in;
 
     private UnityEngine.AI.NavMeshAgent agent;
     // Start is called before the first frame update
@@ -34,9 +37,12 @@ public class Mafiozi_AI : MonoBehaviour
     {
         float distance = Vector3.Distance(Player.transform.position, transform.position);
         rasstoyanie = distance;
-        if(distance > DistancetoRun) { return; }
 
-        if (distance <= DistancetoRun && distance > DistancetoWalk)
+        if(healf<=0){
+            dead();
+            }
+
+        if (distance <= DistancetoRun && distance > DistancetoWalk && hit_in ==0)
         {
             //подходит
             agent.speed=8f;
@@ -47,9 +53,9 @@ public class Mafiozi_AI : MonoBehaviour
 
         }
 
-        if (distance < DistancetoWalk && distance > DistancetoFire)
+        if (distance < DistancetoWalk && distance > DistancetoFire && hit_in ==0)
         {
-            agent.speed=3f;
+            agent.speed=4f;
             anim.SetBool("Walk", true);
             anim.SetBool("Run", false);
             anim.SetBool("shoot", false);
@@ -58,48 +64,73 @@ public class Mafiozi_AI : MonoBehaviour
         }
 
 
-            if (distance < DistancetoFire)
+            if (distance < DistancetoFire && hit_in ==0)
         {
             //стреляет
-            dead();
+           // dead();
             transform.LookAt(Player.transform.position);
+            transform.eulerAngles = new Vector3(0, transform.eulerAngles.y,0);
             anim.SetBool("Walk", false);
             anim.SetBool("Run", false);
             anim.SetBool("shoot", true);
             agent.SetDestination(transform.position);
-
+            
         }
 
-          if (hit_inbody)
+        
+ 
+          if (hit_in == 2)
         {
-            anim.SetBool("Hit_middle", true);
             anim.SetBool("Walk", false);
             anim.SetBool("Run", false);
             anim.SetBool("shoot", false);
+            Debug.Log("Hit_body");
             agent.SetDestination(transform.position);
-
+            StartCoroutine(whait_hit_medium());
+            agent.SetDestination(transform.position);
+           // hit_in = 0;
         }
 
-        if (hit_inhead)
+        if (hit_in == 1)
         {
-            return;
+            healf -=100;
+           // hit_in = 0;    
         }
 
-        if (hit_inleg)
+        if (hit_in == 3)
         {
-            anim.SetBool("Hit_low", true);
             anim.SetBool("Walk", false);
             anim.SetBool("Run", false);
             anim.SetBool("shoot", false);
+            Debug.Log("Hit_legs");
             agent.SetDestination(transform.position);
-
+            StartCoroutine(whait_hit_low());
+            agent.SetDestination(transform.position);
         }
-
+        
     }
 
     void dead(){
         mesh.SetActive(false);
         Ragdoll.SetActive(true);
         Instantiate(Ragdoll, transform.position,transform.rotation);
+        my_weapon.SetActive(true);
+        Instantiate(my_weapon, my_weapon_resp_pos.transform.position,my_weapon_resp_pos.transform.rotation);
+    }
+
+      IEnumerator whait_hit_low(){
+        anim.SetBool("Hit_low", true);
+        agent.SetDestination(transform.position);
+         yield return new WaitForSeconds(2.5f);
+         anim.SetBool("Hit_low", false);
+         hit_in = 0;
+    }
+
+     IEnumerator whait_hit_medium(){
+        anim.SetBool("Hit_middle", true);
+        agent.SetDestination(transform.position);
+         yield return new WaitForSeconds(2.5f);
+         anim.SetBool("Hit_middle", false);
+         hit_in = 0;
     }
 }

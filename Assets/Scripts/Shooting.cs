@@ -204,6 +204,14 @@ public class Shooting : MonoBehaviour
                 rb.AddForceAtPosition(ray.direction * power, hit.point);
 
             }
+
+            if (hit.transform.tag == "Mafia_Enemy")
+            {
+                Hit_box coll = hit.transform.GetComponent<Hit_box>();
+                //урон от пушки, надо массив уронов добавить
+                coll.dmg = 20f;
+                coll.hit = true;
+            } 
             Debug.Log("Shoot: " + hit.transform.name);
         }
         else
