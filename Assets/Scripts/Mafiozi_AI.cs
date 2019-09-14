@@ -20,10 +20,15 @@ public class Mafiozi_AI : MonoBehaviour
     public GameObject Ragdoll;
     public GameObject mesh;
     public GameObject my_weapon;
+    public GameObject my_hat;
+    public GameObject my_hat_resp_pos;
     public GameObject my_weapon_resp_pos;
     public Animator anim;
 
     public float hit_in;
+
+    private bool stay = false;
+    private bool fire = false;
 
     private UnityEngine.AI.NavMeshAgent agent;
     // Start is called before the first frame update
@@ -42,42 +47,66 @@ public class Mafiozi_AI : MonoBehaviour
             dead();
             }
 
-        if (distance <= DistancetoRun && distance > DistancetoWalk && hit_in ==0)
+        if(!stay)
         {
-            //подходит
-            agent.speed=8f;
-            anim.SetBool("Run", true);
-            anim.SetBool("Walk", false);
-            anim.SetBool("shoot", false);
-            agent.SetDestination(Player.transform.position);
+            if (distance <= DistancetoRun && distance > DistancetoWalk && hit_in ==0)
+            {
+                //подходит
+                agent.speed=8f;
+                anim.SetBool("Run", true);
+                anim.SetBool("Walk", false);
+                anim.SetBool("shoot", false);
+                agent.SetDestination(Player.transform.position);
 
-        }
+            }
 
-        if (distance < DistancetoWalk && distance > DistancetoFire && hit_in ==0)
-        {
-            agent.speed=4f;
-            anim.SetBool("Walk", true);
-            anim.SetBool("Run", false);
-            anim.SetBool("shoot", false);
-            agent.SetDestination(Player.transform.position);
+            if (distance < DistancetoWalk && distance > DistancetoFire && hit_in ==0)
+            {
+                agent.speed=4f;
+                anim.SetBool("Walk", true);
+                anim.SetBool("Run", false);
+                anim.SetBool("shoot", false);
+                agent.SetDestination(Player.transform.position);
 
-        }
+            }
 
 
-            if (distance < DistancetoFire && hit_in ==0)
-        {
-            //стреляет
-           // dead();
-            transform.LookAt(Player.transform.position);
-            transform.eulerAngles = new Vector3(0, transform.eulerAngles.y,0);
-            anim.SetBool("Walk", false);
-            anim.SetBool("Run", false);
-            anim.SetBool("shoot", true);
-            agent.SetDestination(transform.position);
+            if (distance <= DistancetoFire && hit_in ==0)
+            {
+                //стреляет
+                stay = true;
+                fire = true;
+                transform.LookAt(Player.transform.position);
+                transform.eulerAngles = new Vector3(0, transform.eulerAngles.y,0);
+                anim.SetBool("Walk", false);
+                anim.SetBool("Run", false);
+                anim.SetBool("shoot", true);
+                agent.SetDestination(transform.position);
             
-        }
+            }
 
-        
+        }else
+            {
+            if (distance > DistancetoRun && hit_in ==0)
+                {
+                    //стреляет
+                    stay = false;
+                    transform.LookAt(Player.transform.position);
+                    anim.SetBool("Walk", true);
+                    anim.SetBool("Run", false);
+                    anim.SetBool("shoot", false);
+                    agent.SetDestination(Player.transform.position);
+            
+                }
+
+            if(fire)
+                {
+                    anim.SetBool("shoot", true);
+                    transform.LookAt(Player.transform.position);
+                    transform.eulerAngles = new Vector3(0, transform.eulerAngles.y,0);
+                    StartCoroutine(whait_shoot());
+                } 
+            }
  
           if (hit_in == 2)
         {
@@ -102,7 +131,6 @@ public class Mafiozi_AI : MonoBehaviour
             anim.SetBool("Walk", false);
             anim.SetBool("Run", false);
             anim.SetBool("shoot", false);
-            Debug.Log("Hit_legs");
             agent.SetDestination(transform.position);
             StartCoroutine(whait_hit_low());
             agent.SetDestination(transform.position);
@@ -116,6 +144,8 @@ public class Mafiozi_AI : MonoBehaviour
         Instantiate(Ragdoll, transform.position,transform.rotation);
         my_weapon.SetActive(true);
         Instantiate(my_weapon, my_weapon_resp_pos.transform.position,my_weapon_resp_pos.transform.rotation);
+        my_hat.SetActive(true);
+        Instantiate(my_hat, my_hat_resp_pos.transform.position,my_hat_resp_pos.transform.rotation);
     }
 
       IEnumerator whait_hit_low(){
@@ -133,4 +163,10 @@ public class Mafiozi_AI : MonoBehaviour
          anim.SetBool("Hit_middle", false);
          hit_in = 0;
     }
+
+     IEnumerator whait_shoot(){
+         yield return new WaitForSeconds(0.5f);
+     
+     }
+
 }

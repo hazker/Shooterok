@@ -1081,6 +1081,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 268881193313261851}
+  - component: {fileID: -7504512267687968271}
   m_Layer: 0
   m_Name: mafiozi_T
   m_TagString: Untagged
@@ -1106,6 +1107,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-7504512267687968271
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3882133517507668744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b3faf9ac27f8e43a25965ee152baf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3964615165493496498
 GameObject:
   m_ObjectHideFlags: 0
