@@ -167,9 +167,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65c401161459e57428d749319b627012, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DistancetoFire: 15
+  DistancetoFire: 20
   DistancetoWalk: 30
-  DistancetoRun: 50
+  DistancetoRun: 35
   rasstoyanie: 0
   healf: 100
   Player: {fileID: 0}

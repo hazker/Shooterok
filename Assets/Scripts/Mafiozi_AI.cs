@@ -27,10 +27,12 @@ public class Mafiozi_AI : MonoBehaviour
 
     public float hit_in;
 
+    private GameObject my_hatp;
     private bool stay = false;
     private bool fire = false;
     private bool i_see = false;
     private bool spalil = false;
+    private bool head_shoot = false;
 
     private UnityEngine.AI.NavMeshAgent agent;
     // Start is called before the first frame update
@@ -138,6 +140,7 @@ public class Mafiozi_AI : MonoBehaviour
         if (hit_in == 1)
         {
             healf -=100;
+            head_shoot = true;
            // hit_in = 0;    
         }
 
@@ -159,13 +162,16 @@ public class Mafiozi_AI : MonoBehaviour
     }
 
     void dead(){
-        mesh.SetActive(false);
+        Destroy(mesh);
         Ragdoll.SetActive(true);
         Instantiate(Ragdoll, transform.position,transform.rotation);
         my_weapon.SetActive(true);
         Instantiate(my_weapon, my_weapon_resp_pos.transform.position,my_weapon_resp_pos.transform.rotation);
         my_hat.SetActive(true);
-        Instantiate(my_hat, my_hat_resp_pos.transform.position,my_hat_resp_pos.transform.rotation);
+        my_hatp = Instantiate(my_hat, my_hat_resp_pos.transform.position,my_hat_resp_pos.transform.rotation);
+        Debug.Log(my_hat.transform.up);
+        if(head_shoot)
+        my_hatp.GetComponent<Rigidbody>().AddForce(my_hatp.transform.forward * 40f, ForceMode.Impulse);
     }
 
     void chek(float distance){
