@@ -8,7 +8,7 @@ public class Shooting : MonoBehaviour
     
     public float power = 50f;
     public float distance = 100;
-    public CharacterController Player;
+    public PlayerController Player;
     public float shellpower = 50f;
     public int NumberOfWeapons;
     public Animator[] Animator;
@@ -45,7 +45,7 @@ public class Shooting : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Player = Player.GetComponent<CharacterController>();
+        Player = Player.GetComponent<PlayerController>();
         weapons = new int[NumberOfWeapons];
         currentAmmo = new int[NumberOfWeapons];
         AmmoText.text = "";
