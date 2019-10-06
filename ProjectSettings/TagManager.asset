@@ -9,6 +9,8 @@ TagManager:
   - TOMMY
   - Helmet
   - Mafia_Enemy
+  - Ladder
+  - PlayerCam
   layers:
   - Default
   - TransparentFX
