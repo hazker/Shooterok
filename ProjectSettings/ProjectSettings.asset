@@ -663,10 +663,10 @@ PlayerSettings:
   facebookXfbml: 0
   facebookFrictionlessRequests: 1
   apiCompatibilityLevel: 6
-  cloudProjectId: 
+  cloudProjectId: e383fb89-11de-4c9d-822d-0cee0beda9b8
   framebufferDepthMemorylessMode: 0
-  projectName: 
-  organizationId: 
+  projectName: Shooterok
+  organizationId: unity_c0k1fuyyb47rug
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0
   disableOldInputManagerSupport: 0

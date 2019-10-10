@@ -11,6 +11,7 @@ TagManager:
   - Mafia_Enemy
   - Ladder
   - PlayerCam
+  - Ar
   layers:
   - Default
   - TransparentFX
