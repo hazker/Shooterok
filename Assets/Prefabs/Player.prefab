@@ -100,6 +100,7 @@ GameObject:
   - component: {fileID: 1254798961380605405}
   - component: {fileID: 8831674832559721931}
   - component: {fileID: 1436576051343990737}
+  - component: {fileID: -6856401193837111911}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -261,9 +262,10 @@ MonoBehaviour:
   shellspawn:
   - {fileID: 1436576052477384198}
   - {fileID: 1436576052317380030}
-  Hp: {fileID: 0}
-  Armor: {fileID: 0}
-  AmmoText: {fileID: 0}
+  Hp: {fileID: 561515976268777060, guid: 79bbafa6795a6c24d81c65082062d2eb, type: 3}
+  Armor: {fileID: 2818362786685087792, guid: 6f123498e6ae0464e9257366fb4ae0db, type: 3}
+  AmmoText: {fileID: 3100094600158498591, guid: 355e2e88731c4334191494dafa28e80a,
+    type: 3}
   fireDelta: 0.3
 --- !u!1001 &7431276466010449498
 PrefabInstance:
@@ -331,6 +333,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9204341267400743446, guid: 5eea388fc52904a4787df5e319391047,
+        type: 3}
+      propertyPath: m_Name
+      value: Hands_tommy_stand (3)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2947c8a7205aaa543b3ae032cf312a1d, type: 3}
@@ -430,6 +437,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4797369402064768343, guid: 16e1963fc2aad0c4ea4ef7d76e8dafe8,
+        type: 3}
+      propertyPath: m_Name
+      value: Hands_PM_stand (1)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 362d25c05d009274c847c2cd5331896a, type: 3}
